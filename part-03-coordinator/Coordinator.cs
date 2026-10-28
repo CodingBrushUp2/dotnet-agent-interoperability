@@ -10,11 +10,14 @@ public interface IIncidentTool
     Task<IReadOnlyList<Evidence>> CollectAsync(string incidentId, CancellationToken ct);
 }
 
-// Illustration: tools are trusted and few; no registration, telemetry or retry setup.
+// Teaching sketch: few trusted, cancellation-aware tools. No transport or tracing setup.
+// CancelAfter requests cancellation; it cannot forcibly stop a tool that ignores it.
 public sealed class Coordinator(IEnumerable<IIncidentTool> tools)
 {
     public async Task<IReadOnlyList<ToolOutcome>> CollectAsync(string incidentId, CancellationToken ct)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(incidentId);
+        ct.ThrowIfCancellationRequested();
         return await Task.WhenAll(tools.Select(async tool =>
         {
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct);
