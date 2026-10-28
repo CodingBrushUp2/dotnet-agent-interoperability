@@ -10,11 +10,15 @@ public interface IDeploymentAgent
     Task<IReadOnlyList<AgentEvidence>> AnalyzeAsync(AgentRequest request, CancellationToken ct);
 }
 
-// Illustrative call boundary, not an A2A client. Authentication belongs in the adapter.
+// Illustrative call boundary, not an A2A client. Authentication and authorization
+// belong at the transport/service boundary. Cancellation is cooperative.
 public sealed class AgentCommunication(IDeploymentAgent agent)
 {
     public async Task<AgentResult> AnalyzeAsync(AgentRequest request, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(request);
+        if (request.To <= request.From) throw new ArgumentException("Invalid time window.", nameof(request));
+        ct.ThrowIfCancellationRequested();
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct);
         deadline.CancelAfter(TimeSpan.FromSeconds(10));
 
