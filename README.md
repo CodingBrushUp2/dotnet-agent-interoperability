@@ -9,4 +9,6 @@ Small architecture sketches accompanying the four-part **Building Enterprise AI 
 | [Part 3: Bounded Coordinator in .NET](https://www.alihaghighi.pro/blog/ai-mesh-architecture-part-3) | [Coordinator.cs](part-03-coordinator/Coordinator.cs) | Typed evidence and partial failure |
 | [Part 4: Independent .NET Agents](https://www.alihaghighi.pro/blog/ai-mesh-architecture-part-4) | [AgentCommunication.cs](part-04-interoperability/AgentCommunication.cs) | Communication contracts and deadlines |
 
+The snippets show control flow, not enforced request deadlines: cancellation must be honored by the downstream adapter. They have not been compiled or tested as a standalone project.
+
 No model, MCP server, A2A endpoint, or mesh infrastructure is running here. Source files are focused teaching sketches without a project file, build pipeline, or production security configuration.
